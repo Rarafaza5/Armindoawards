@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votação Armindo Awards</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0d0d0d, #3a3a3a);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            overflow: auto; /* Permite rolagem quando necessário */
+            text-align: center;
+        }
+        h1 {
+            font-size: 3rem;
+            color: #d4af37; /* Dourado */
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+        .container {
+            background: rgba(30, 30, 30, 0.9);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+            width: 90%;
+            max-width: 700px;
+            overflow-y: auto; /* Permite rolagem no contêiner */
+            max-height: 80vh; /* Limita a altura do contêiner */
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.9);
+        }
+        .question {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #d4af37;
+        }
+        .radio-container {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .radio-label {
+            position: relative;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            transition: background 0.3s, border-color 0.3s;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .radio-label:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #d4af37;
+        }
+        .radio-label.selected {
+            background: rgba(212, 175, 55, 0.5);
+            border-color: #ffd700;
+        }
+        .radio-input {
+            display: none; /* Esconder os botões de rádio reais */
+        }
+        .radio-input:checked + .radio-label {
+            background: rgba(212, 175, 55, 0.5);
+            border-color: #ffd700;
+        }
+        .button {
+            background: linear-gradient(45deg, #d4af37, #ffd700);
+            color: #1c1c1c;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin: 15px;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        .button:hover {
+            background: linear-gradient(45deg, #ffd700, #d4af37);
+            transform: translateY(-3px);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            animation: fadeInModal 0.5s ease-in-out;
+        }
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-content {
+            background: linear-gradient(135deg, #1c1c1c, #2a2a2a);
+            color: #d4af37;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+            text-align: center;
+            max-width: 500px;
+            width: 80%;
+            transition: transform 0.3s;
+            transform: translateY(-50px);
+            opacity: 0;
+            animation: modalFadeIn 0.5s forwards;
+        }
+        @keyframes modalFadeIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        #alreadyVotedMessage {
+            display: none;
+            color: red;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Votação Armindo Awards</h1>
+<div class="container" id="questionarioContainer">
+    <div class="question">Acontecimento do Ano</div>
+    <div class="radio-container" id="acontecimentoContainer">
+        <input type="radio" id="acontecimento1" class="radio-input" name="acontecimento" value="Cadeirada em debate no Brasil">
+        <label class="radio-label" for="acontecimento1">Cadeirada em debate no Brasil</label>
+        
+        <input type="radio" id="acontecimento2" class="radio-input" name="acontecimento" value="Caso Castelo Branco">
+        <label class="radio-label" for="acontecimento2">Caso Castelo Branco</label>
+
+        <input type="radio" id="acontecimento3" class="radio-input" name="acontecimento" value="Concerto de Taylor Swift em Portugal">
+        <label class="radio-label" for="acontecimento3">Concerto de Taylor Swift em Portugal</label>
+
+        <input type="radio" id="acontecimento4" class="radio-input" name="acontecimento" value="Estreia de Divertida-Mente 2 (Inside Out 2)">
+        <label class="radio-label" for="acontecimento4">Estreia de Divertida-Mente 2 (Inside Out 2)</label>
+
+        <input type="radio" id="acontecimento5" class="radio-input" name="acontecimento" value="Incêndio de Albergaria-a-Velha">
+        <label class="radio-label" for="acontecimento5">Incêndio de Albergaria-a-Velha</label>
+
+        <input type="radio" id="acontecimento6" class="radio-input" name="acontecimento" value="Jogos Olímpicos de Verão de Paris">
+        <label class="radio-label" for="acontecimento6">Jogos Olímpicos de Verão de Paris</label>
+
+        <input type="radio" id="acontecimento7" class="radio-input" name="acontecimento" value="NOS Alive’24">
+        <label class="radio-label" for="acontecimento7">NOS Alive’24</label>
+
+        <input type="radio" id="acontecimento8" class="radio-input" name="acontecimento" value="Rock in Rio Lisboa 2024">
+        <label class="radio-label" for="acontecimento8">Rock in Rio Lisboa 2024</label>
+
+        <input type="radio" id="acontecimento9" class="radio-input" name="acontecimento" value="Sismo de 5,3">
+        <label class="radio-label" for="acontecimento9">Sismo de 5,3</label>
+    </div>
+
+    <div class="question">Piada Interna do Ano</div>
+    <div class="radio-container" id="piadaContainer">
+        <input type="radio" id="piada1" class="radio-input" name="piada" value="Barbie Girl - Peter Griffin">
+        <label class="radio-label" for="piada1">Barbie Girl - Peter Griffin</label>
+
+        <input type="radio" id="piada2" class="radio-input" name="piada" value="Barbie Girl - Rafael Diogo ft. Jorge Figueira">
+        <label class="radio-label" for="piada2">Barbie Girl - Rafael Diogo ft. Jorge Figueira</label>
+
+        <input type="radio" id="piada3" class="radio-input" name="piada" value="Capitão no AFK">
+        <label class="radio-label" for="piada3">Capitão no AFK</label>
+
+        <input type="radio" id="piada4" class="radio-input" name="piada" value="Festa do Xavier">
+        <label class="radio-label" for="piada4">Festa do Xavier</label>
+
+        <input type="radio" id="piada5" class="radio-input" name="piada" value="I Will Survive - Peter Griffin">
+        <label class="radio-label" for="piada5">I Will Survive - Peter Griffin</label>
+
+        <input type="radio" id="piada6" class="radio-input" name="piada" value="‘Joka’ e as suas falas novas">
+        <label class="radio-label" for="piada6">‘Joka’ e as suas falas novas</label>
+
+        <input type="radio" id="piada7" class="radio-input" name="piada" value="Jorge a Espiar">
+        <label class="radio-label" for="piada7">Jorge a Espiar</label>
+
+        <input type="radio" id="piada8" class="radio-input" name="piada" value="Magalhães">
+        <label class="radio-label" for="piada8">Magalhães</label>
+
+        <input type="radio" id="piada9" class="radio-input" name="piada" value="Nugget de suporte emocional">
+        <label class="radio-label" for="piada9">Nugget de suporte emocional</label>
+
+        <input type="radio" id="piada10" class="radio-input" name="piada" value="Obrigado, José Sócrates">
+        <label class="radio-label" for="piada10">Obrigado, José Sócrates</label>
+
+        <input type="radio" id="piada11" class="radio-input" name="piada" value="RU">
+        <label class="radio-label" for="piada11">RU</label>
+
+        <input type="radio" id="piada12" class="radio-input" name="piada" value="Tia Cátia e o “Caro Encarregado de Educação…”">
+        <label class="radio-label" for="piada12">Tia Cátia e o “Caro Encarregado de Educação…”</label>
+
+        <input type="radio" id="piada13" class="radio-input" name="piada" value="Xavier Paredes">
+        <label class="radio-label" for="piada13">Xavier Paredes</label>
+    </div>
+
+    <div class="question">Música do Ano</div>
+    <div class="radio-container" id="musicaContainer">
+        <input type="radio" id="musica1" class="radio-input" name="musica" value="Die With A Smile - Lady Gaga ft. Bruno Mars">
+        <label class="radio-label" for="musica1">Die With A Smile - Lady Gaga ft. Bruno Mars</label>
+
+        <input type="radio" id="musica2" class="radio-input" name="musica" value="Bye Bye Bye - NSYNC (Versão de Deadpool & Wolverine)">
+        <label class="radio-label" for="musica2">Bye Bye Bye - NSYNC (Versão de Deadpool & Wolverine)</label>
+
+        <input type="radio" id="musica3" class="radio-input" name="musica" value="Double Life - Pharrell Williams">
+        <label class="radio-label" for="musica3">Double Life - Pharrell Williams</label>
+
+        <input type="radio" id="musica4" class="radio-input" name="musica" value="O Sarapanta - Quim Barreiros">
+        <label class="radio-label" for="musica4">O Sarapanta - Quim Barreiros</label>
+
+        <input type="radio" id="musica5" class="radio-input" name="musica" value="Everybody Wants to Rule the World - Tears for Fears (Versão de Gru - O Maldisposto 4)">
+        <label class="radio-label" for="musica5">Everybody Wants to Rule the World - Tears for Fears (Versão de Gru - O Maldisposto 4)</label>
+    </div>
+
+    <div class="question">Filme do Ano</div>
+    <div class="radio-container" id="filmeContainer">
+        <input type="radio" id="filme1" class="radio-input" name="filme" value="Madame Web">
+        <label class="radio-label" for="filme1">Madame Web</label>
+
+        <input type="radio" id="filme2" class="radio-input" name="filme" value="Dune - Duna: Parte Dois">
+        <label class="radio-label" for="filme2">Dune - Duna: Parte Dois</label>
+
+        <input type="radio" id="filme3" class="radio-input" name="filme" value="O Panda do Kung Fu 4">
+        <label class="radio-label" for="filme3">O Panda do Kung Fu 4</label>
+
+        <input type="radio" id="filme4" class="radio-input" name="filme" value="Godzilla x Kong: O Novo Império">
+        <label class="radio-label" for="filme4">Godzilla x Kong: O Novo Império</label>
+
+        <input type="radio" id="filme5" class="radio-input" name="filme" value="IF – Amigos Imaginários">
+        <label class="radio-label" for="filme5">IF – Amigos Imaginários</label>
+
+        <input type="radio" id="filme6" class="radio-input" name="filme" value="Furiosa: Uma Saga Mad Max">
+        <label class="radio-label" for="filme6">Furiosa: Uma Saga Mad Max</label>
+
+        <input type="radio" id="filme7" class="radio-input" name="filme" value="Garfield: O Filme">
+        <label class="radio-label" for="filme7">Garfield: O Filme</label>
+
+        <input type="radio" id="filme8" class="radio-input" name="filme" value="Gru - O Maldisposto 4">
+        <label class="radio-label" for="filme8">Gru - O Maldisposto 4</label>
+
+        <input type="radio" id="filme9" class="radio-input" name="filme" value="Deadpool & Wolverine">
+        <label class="radio-label" for="filme9">Deadpool & Wolverine</label>
+
+        <input type="radio" id="filme10" class="radio-input" name="filme" value="Divertida-Mente 2 (Inside Out 2)">
+        <label class="radio-label" for="filme10">Divertida-Mente 2 (Inside Out 2)</label>
+
+        <input type="radio" id="filme11" class="radio-input" name="filme" value="Isto Acaba Aqui">
+        <label class="radio-label" for="filme11">Isto Acaba Aqui</label>
+
+        <input type="radio" id="filme12" class="radio-input" name="filme" value="Beetlejuice Beetlejuice">
+        <label class="radio-label" for="filme12">Beetlejuice Beetlejuice</label>
+    </div>
+
+    <div class="question">Jogo do Ano</div>
+    <div class="radio-container" id="jogoContainer">
+        <input type="radio" id="jogo1" class="radio-input" name="jogo" value="Disney Epic Mickey">
+        <label class="radio-label" for="jogo1">Disney Epic Mickey</label>
+
+        <input type="radio" id="jogo2" class="radio-input" name="jogo" value="Elden Ring: Shadow of the Erdtree">
+        <label class="radio-label" for="jogo2">Elden Ring: Shadow of the Erdtree</label>
+
+        <input type="radio" id="jogo3" class="radio-input" name="jogo" value="Final Fantasy VII Rebirth">
+        <label class="radio-label" for="jogo3">Final Fantasy VII Rebirth</label>
+
+        <input type="radio" id="jogo4" class="radio-input" name="jogo" value="The Last of Us Part II Remastered">
+        <label class="radio-label" for="jogo4">The Last of Us Part II Remastered</label>
+
+        <input type="radio" id="jogo5" class="radio-input" name="jogo" value="Mario vs. Donkey Kong">
+        <label class="radio-label" for="jogo5">Mario vs. Donkey Kong</label>
+
+        <input type="radio" id="jogo6" class="radio-input" name="jogo" value="Princess Peach: Showtime!">
+        <label class="radio-label" for="jogo6">Princess Peach: Showtime!</label>
+
+        <input type="radio" id="jogo7" class="radio-input" name="jogo" value="Star Wars Outlaws">
+        <label class="radio-label" for="jogo7">Star Wars Outlaws</label>
+
+        <input type="radio" id="jogo8" class="radio-input" name="jogo" value="Supermarket Simulator">
+        <label class="radio-label" for="jogo8">Supermarket Simulator</label>
+
+        <input type="radio" id="jogo9" class="radio-input" name="jogo" value="Until Then">
+        <label class="radio-label" for="jogo9">Until Then</label>
+    </div>
+
+    <button class="button" id="voteBtn">Votar</button>
+</div>
+
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <p id="modalMessage">Seu voto foi registrado com sucesso!</p>
+    </div>
+</div>
+
+<div id="alreadyVotedMessage" style="display: none; color: red; margin-top: 20px;">
+    Você já votou! Obrigado pela sua participação.
+</div>
+
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
+    import { getDatabase, ref, set, get } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
+
+    const firebaseConfig = {
+        apiKey: "SEU_API_KEY",
+        authDomain: "SEU_AUTH_DOMAIN",
+        projectId: "SEU_PROJECT_ID",
+        storageBucket: "SEU_STORAGE_BUCKET",
+        messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+        appId: "SEU_APP_ID",
+        databaseURL: "https://aawards-default-rtdb.firebaseio.com/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    async function getUserIp() {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip.replace(/\./g, '_'); // Substitui pontos por sublinhados
+    }
+
+    getUserIp().then(userIp => {
+        const userVotesRef = ref(database, 'votes/' + userIp);
+
+        get(userVotesRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                document.getElementById('questionarioContainer').style.display = 'none';
+                document.getElementById('alreadyVotedMessage').style.display = 'block';
+            } else {
+                document.getElementById('questionarioContainer').style.display = 'block';
+            }
+        });
+
+        document.getElementById('voteBtn').addEventListener('click', async () => {
+            const selectedPersonalidade = document.querySelector('input[name="personalidade"]:checked');
+            const selectedAcontecimento = document.querySelector('input[name="acontecimento"]:checked');
+            const selectedPiada = document.querySelector('input[name="piada"]:checked');
+            const selectedMusica = document.querySelector('input[name="musica"]:checked');
+            const selectedFilme = document.querySelector('input[name="filme"]:checked');
+            const selectedJogo = document.querySelector('input[name="jogo"]:checked');
+
+            if (!selectedAcontecimento || !selectedPiada || !selectedMusica || !selectedFilme || !selectedJogo) {
+                alert('Por favor, selecione uma opção em todas as perguntas.');
+                return;
+            }
+
+            const votesData = {
+                acontecimento: selectedAcontecimento.value,
+                piada: selectedPiada.value,
+                musica: selectedMusica.value,
+                filme: selectedFilme.value,
+                jogo: selectedJogo.value
+            };
+
+            await set(userVotesRef, votesData);
+
+            document.getElementById('modal').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('modal').style.display = 'none';
+            }, 3000);
+
+            document.getElementById('questionarioContainer').style.display = 'none';
+            document.getElementById('alreadyVotedMessage').style.display = 'block';
+        });
+    });
+</script>
+
+</body>
+</html>
