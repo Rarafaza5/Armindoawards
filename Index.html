@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votação Armindo Awards</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0d0d0d, #3a3a3a);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            overflow: auto; /* Permite rolagem quando necessário */
+            text-align: center;
+
+            scrollbar-width: thin; /* Scroll fino (Firefox) */
+            scrollbar-color: #ffd700 transparent; /* Cor do thumb e track (Firefox) */
+
+        }
+
+        #Ator\ do\ Clube\ de\ Teatro\ do\ Ano, #AtrizdoClubedeTeatrodoAno {
+    background: linear-gradient(135deg, #fda814, #f09800);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgb(255, 191, 54);
+    animation: pulseEffect 2s infinite;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column; /* Garante que os elementos internos fiquem empilhados */
+    align-items: stretch; /* Faz com que os itens preencham o espaço horizontal */
+}
+
+/* Ajusta o alinhamento das opções (radio-label) */
+#Ator\ do\ Clube\ de\ Teatro\ do\ Ano .radio-label, 
+#AtrizdoClubedeTeatrodoAno .radio-label {
+    width: 100%; /* Faz as opções ocuparem toda a largura do contêiner */
+    box-sizing: border-box; /* Inclui padding e borda dentro da largura */
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    transition: background 0.3s, border-color 0.3s;
+    margin: 5px 0; /* Espaço entre as opções */
+    padding: 12px; /* Espaço interno dentro das opções */
+}
+
+#Ator\ do\ Clube\ de\ Teatro\ do\ Ano .radio-label:hover, 
+#AtrizdoClubedeTeatrodoAno .radio-label:hover {
+    background: rgba(255, 255, 255, 0.4);
+    border-color: #ffffff;
+}
+
+
+#Ator\ do\ Clube\ de\ Teatro\ do\ Ano .radio-input:checked + .radio-label, 
+#AtrizdoClubedeTeatrodoAno .radio-input:checked + .radio-label {
+    background: rgb(255, 188, 73); /* Cor de fundo destacada */
+    border-color: #ffffff; /* Borda branca para destaque */
+    color: #fff; /* Mantém o texto em branco */
+    box-shadow: 0 4px 10px rgb(195, 136, 0); /* Adiciona sombra suave */
+    transform: scale(1.02); /* Efeito de leve aumento ao selecionar */
+    transition: all 0.3s ease; /* Suaviza as alterações */
+}
+
+
+
+/* Para telas muito pequenas (ex.: smartphones) */
+@media (max-width: 480px) {
+    #Ator\ do\ Clube\ de\ Teatro\ do\ Ano, #AtrizdoClubedeTeatrodoAno {
+        padding: 10px;
+    }
+
+    #Ator\ do\ Clube\ de\ Teatro\ do\ Ano .radio-label, 
+    #AtrizdoClubedeTeatrodoAno .radio-label {
+        font-size: 0.75rem; /* Fonte menor para caber na tela */
+        padding: 8px;
+    }
+}
+
+
+
+
+        h1 {
+            font-size: 3rem;
+            color: #d4af37; /* Dourado */
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+        .container {
+            background: rgba(30, 30, 30, 0.9);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+            width: 90%;
+            max-width: 700px;
+            overflow-y: auto; /* Permite rolagem no contêiner */
+            max-height: 80vh; /* Limita a altura do contêiner */
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.9);
+        }
+        .question {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #d4af37;
+        }
+        .radio-container {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .radio-label {
+            position: relative;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            transition: background 0.3s, border-color 0.3s;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .radio-label:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #d4af37;
+        }
+        .radio-label.selected {
+            background: rgba(212, 175, 55, 0.5);
+            border-color: #ffd700;
+        }
+        .radio-input {
+            display: none; /* Esconder os botões de rádio reais */
+        }
+        .radio-input:checked + .radio-label {
+            background: rgba(212, 175, 55, 0.5);
+            border-color: #ffd700;
+        }
+        .button {
+            background: linear-gradient(45deg, #d4af37, #ffd700);
+            color: #1c1c1c;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin: 15px;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        .button:hover {
+            background: linear-gradient(45deg, #ffd700, #d4af37);
+            transform: translateY(-3px);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            animation: fadeInModal 0.5s ease-in-out;
+        }
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .modal-content {
+            background: linear-gradient(135deg, #1c1c1c, #2a2a2a);
+            color: #d4af37;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+            text-align: center;
+            max-width: 500px;
+            width: 80%;
+            transition: transform 0.3s;
+            transform: translateY(-50px);
+            opacity: 0;
+            animation: modalFadeIn 0.5s forwards;
+        }
+        @keyframes modalFadeIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        #alreadyVotedMessage {
+            display: none;
+            color: red;
+            margin-top: 20px;
+        }
+
+      
+        
+    </style>
+</head>
+<body>
+
+<h1>Votação Armindo Awards</h1>
+<div class="container" id="questionarioContainer">
+    <div class="question">Personalidade do Ano</div>
+    <div class="radio-container" id="PersonalidadedoAnoContainer">
+        <input type="radio" id="PersonalidadedoAno1" class="radio-input" name="PersonalidadedoAno" value="Gisèle Pelicot">
+        <label class="radio-label" for="PersonalidadedoAno1">Gisèle Pelicot</label>
+
+
+        
+        <input type="radio" id="PersonalidadedoAno2" class="radio-input" name="PersonalidadedoAno" value="Iúri Leitão">
+        <label class="radio-label" for="PersonalidadedoAno2">Iúri Leitão</label>
+
+        
+        <input type="radio" id="PersonalidadedoAno3" class="radio-input" name="PersonalidadedoAno" value="Joost Klein">
+        <label class="radio-label" for="PersonalidadedoAno3">Joost Klein</label>
+
+        <input type="radio" id="PersonalidadedoAno4" class="radio-input" name="PersonalidadedoAno" value="P. Diddy">
+        <label class="radio-label" for="PersonalidadedoAno4">P. Diddy</label>
+
+        <input type="radio" id="PersonalidadedoAno5" class="radio-input" name="PersonalidadedoAno" value="Sónia Tavares">
+        <label class="radio-label" for="PersonalidadedoAno5">Sónia Tavares</label>
+
+        <input type="radio" id="PersonalidadedoAno6" class="radio-input" name="PersonalidadedoAno" value="Thomas Crooks">
+        <label class="radio-label" for="PersonalidadedoAno6">Thomas Crooks</label>
+
+        <input type="radio" id="PersonalidadedoAno7" class="radio-input" name="PersonalidadedoAno" value="Donald Trump">
+        <label class="radio-label" for="PersonalidadedoAno7">Donald Trump</label>
+
+         </div>
+
+    <div class="question">Piada Interna do Ano</div>
+    <div class="radio-container" id="piadaContainer">
+        <input type="radio" id="piada1" class="radio-input" name="piada" value="Barbie Girl - Peter Griffin">
+        <label class="radio-label" for="piada1">Barbie Girl - Peter Griffin</label>
+
+        <input type="radio" id="piada2" class="radio-input" name="piada" value="Barbie Girl - Rafael Diogo ft. Jorge Figueira">
+        <label class="radio-label" for="piada2">Barbie Girl - Rafael Diogo ft. Jorge Figueira</label>
+
+        <input type="radio" id="piada3" class="radio-input" name="piada" value="Festa do Xavier">
+        <label class="radio-label" for="piada3">Festa do Xavier</label>
+
+        <input type="radio" id="piada4" class="radio-input" name="piada" value="Magalhães">
+        <label class="radio-label" for="piada4">Magalhães</label>
+
+       
+        <input type="radio" id="piada5" class="radio-input" name="piada" value="Xavier Paredes">
+        <label class="radio-label" for="piada5">Xavier Paredes</label>
+
+        <input type="radio" id="piada6" class="radio-input" name="piada" value="Véspera Asiatica">
+        <label class="radio-label" for="piada6">Véspera Asiatica</label>
+    </div>
+
+    <div class="question">Evento do Ano</div>
+    <div class="radio-container" id="EventodoAnoContainer">
+        <input type="radio" id="EventodoAno1" class="radio-input" name="EventodoAno" value="Oscares Eleitoriais">
+        <label class="radio-label" for="EventodoAno1">Oscares Eleitoriais</label>
+
+        <input type="radio" id="EventodoAno2" class="radio-input" name="EventodoAno" value="25 de Abril">
+        <label class="radio-label" for="EventodoAno2">25 de Abril</label>
+
+        <input type="radio" id="EventodoAno3" class="radio-input" name="EventodoAno" value="Eurovisão 2024">
+        <label class="radio-label" for="EventodoAno3">Eurovisão 2024</label>
+   </div>
+
+    <div class="question">Jogo do Ano</div>
+    <div class="radio-container" id="JogoContainer">
+        <input type="radio" id="Jogo1" class="radio-input" name="Jogo" value="Elden Ring Shadow of the Erdtree">
+        <label class="radio-label" for="Jogo1">Elden Ring Shadow of the Erdtree</label>
+
+        <input type="radio" id="Jogo2" class="radio-input" name="Jogo" value="The Last of Us Parte II Remastered">
+        <label class="radio-label" for="Jogo2">The Last of Us Parte II Remastered</label>
+
+        <input type="radio" id="Jogo3" class="radio-input" name="Jogo" value="Mario vs Donkey Kong">
+        <label class="radio-label" for="Jogo3">Mario vs Donkey Kong</label>
+
+        <input type="radio" id="Jogo4" class="radio-input" name="Jogo" value="Super Market Simulator">
+        <label class="radio-label" for="Jogo4">Super Market Simulator</label>
+
+        <input type="radio" id="Jogo5" class="radio-input" name="Jogo" value="Until Then">
+        <label class="radio-label" for="Jogo5">Until Then</label>
+
+        <input type="radio" id="Jogo6" class="radio-input" name="Jogo" value="Astro Bot">
+        <label class="radio-label" for="Jogo6">Astro Bot</label>
+        
+</div>
+
+    <div class="question">Acontecimento do Ano</div>
+    <div class="radio-container" id="AcontecimentoContainer">
+        <input type="radio" id="Acontecimento1" class="radio-input" name="Acontecimento" value="Cadeirada em debate no Brasil">
+        <label class="radio-label" for="Acontecimento1">Cadeirada em debate no Brasil</label>
+
+        <input type="radio" id="Acontecimento2" class="radio-input" name="Acontecimento" value="Caso Castelo Branco">
+        <label class="radio-label" for="Acontecimento2">Caso Castelo Branco</label>
+
+        <input type="radio" id="Acontecimento3" class="radio-input" name="Acontecimento" value="Estreia de Inside Out 2">
+        <label class="radio-label" for="Acontecimento3">Estreia de "Inside Out 2"</label>
+
+        <input type="radio" id="Acontecimento4" class="radio-input" name="Acontecimento" value="Incêndio em Albergaria-a-Velha">
+        <label class="radio-label" for="Acontecimento4">Incêndio em Albergaria-a-Velha</label>
+
+        <input type="radio" id="Acontecimento5" class="radio-input" name="Acontecimento" value="Sismo">
+        <label class="radio-label" for="Acontecimento5">Sismo</label>
+
+        <input type="radio" id="Acontecimento6" class="radio-input" name="Acontecimento" value="Reabertura da Catedral de Notre-Dame de Paris">
+        <label class="radio-label" for="Acontecimento6">Reabertura da Catedral de Notre-Dame de Paris</label>
+ </div>
+
+
+ <div class="question">Musica do Ano</div>
+    <div class="radio-container" id="MusicaContainer">
+        <input type="radio" id="Musica1" class="radio-input" name="Musica" value="Bye Bye Bye - NSYNC (Versão de Deadpool & Wolverine)">
+        <label class="radio-label" for="Musica1">Bye Bye Bye - NSYNC (Versão de Deadpool & Wolverine)</label>
+
+        <input type="radio" id="Musica2" class="radio-input" name="Musica" value="Double Life - Pharrell Williams">
+        <label class="radio-label" for="Musica2">Double Life - Pharrell Williams</label>
+
+        <input type="radio" id="Musica3" class="radio-input" name="Musica" value="O Sarapanta - Quim Barreiros">
+        <label class="radio-label" for="Musica3">O Sarapanta - Quim Barreiros</label>
+
+        <input type="radio" id="Musica4" class="radio-input" name="Musica" value="Everybody Wants to Rule the World - Tears for Fears (Versão de Gru - O Maldisposto 4)">
+        <label class="radio-label" for="Musica4">Everybody Wants to Rule the World - Tears for Fears (Versão de Gru - O Maldisposto 4)</label>
+      
+        <input type="radio" id="Musica5" class="radio-input" name="Musica" value="Spanish or Vanish - Duolingo">
+        <label class="radio-label" for="Musica5">Spanish or Vanish - Duolingo</label>
+
+        <input type="radio" id="Musica6" class="radio-input" name="Musica" value="APT - ROSÉ & Bruno Mars">
+        <label class="radio-label" for="Musica6">APT - ROSÉ & Bruno Mars</label>
+ 
+        
+ 
+    </div>
+
+
+
+
+    <div class="question">Atriz do Ano</div>
+    <div class="radio-container" id="Atrizdoano">
+
+
+        <input type="radio" id="Atriz1" class="radio-input" name="Atriz" value="Blake Lively">
+        <label class="radio-label" for="Atriz1">Blake Lively</label>
+
+        <input type="radio" id="Atriz2" class="radio-input" name="Atriz" value="Fernanda Torres">
+        <label class="radio-label" for="Atriz2">Fernanda Torres</label>
+
+
+        <input type="radio" id="Atriz3" class="radio-input" name="Atriz" value="Jenna Ortega">
+        <label class="radio-label" for="Atriz3">Jenna Ortega</label>
+
+        
+        <input type="radio" id="Atriz4" class="radio-input" name="Atriz" value="Scarlett Johansson">
+        <label class="radio-label" for="Atriz4">Scarlett Johansson</label>
+
+
+        <input type="radio" id="Atriz5" class="radio-input" name="Atriz" value="Winona Ryder">
+        <label class="radio-label" for="Atriz5">Winona Ryder</label>
+
+
+        <input type="radio" id="Atriz6" class="radio-input" name="Atriz" value="Zendaya">
+        <label class="radio-label" for="Atriz6">Zendaya</label>
+
+
+    </div>
+
+    <div class="question">Ator do Ano</div>
+    <div class="radio-container" id="Ator do Ano">
+
+        <input type="radio" id="Ator1" class="radio-input" name="Ator" value="Hugh Jackman">
+        <label class="radio-label" for="Ator1">Hugh Jackman</label>
+
+        <input type="radio" id="Ator2" class="radio-input" name="Ator" value="Jack Black">
+        <label class="radio-label" for="Ator2">Jack Black</label>
+
+        <input type="radio" id="Ator3" class="radio-input" name="Ator" value="Michael Keaton">
+        <label class="radio-label" for="Ator3">Michael Keaton</label>
+
+        <input type="radio" id="Ator4" class="radio-input" name="Ator" value="Ryan Reynolds">
+        <label class="radio-label" for="Ator4">Ryan Reynolds</label>
+
+        <input type="radio" id="Ator5" class="radio-input" name="Ator" value="Steve Carell">
+        <label class="radio-label" for="Ator5">Steve Carell</label>
+
+
+        <input type="radio" id="Ator6" class="radio-input" name="Ator" value="Timothée Chalamet">
+        <label class="radio-label" for="Ator6">Timothée Chalamet</label>
+
+       
+ 
+    </div>
+
+    <div class="question">Filme do Ano</div>
+    <div class="radio-container" id="Filme do Ano">
+
+        <input type="radio" id="Filme1" class="radio-input" name="Filme" value="Deadpool & Wolverine">
+        <label class="radio-label" for="Filme1">Deadpool & Wolverine</label>
+
+        <input type="radio" id="Filme2" class="radio-input" name="Filme" value="Divertida-Mente 2">
+        <label class="radio-label" for="Filme2">Divertida-Mente 2</label>
+
+        <input type="radio" id="Filme3" class="radio-input" name="Filme" value="Beetlejuice Beetlejuice">
+        <label class="radio-label" for="Filme3">Beetlejuice Beetlejuice</label>
+
+        <input type="radio" id="Filme4" class="radio-input" name="Filme" value="Venom: A Última Dança">
+        <label class="radio-label" for="Filme4">Venom: A Última Dança</label>
+
+        <input type="radio" id="Filme5" class="radio-input" name="Filme" value="Vaiana 2">
+        <label class="radio-label" for="Filme5">Vaiana 2</label>
+
+        <input type="radio" id="Filme6" class="radio-input" name="Filme" value="Sonic 3: O Filme">
+        <label class="radio-label" for="Filme6">Sonic 3: O Filme</label>
+
+    </div>
+
+
+
+    <div class="question">Ator do Clube de Teatro do Ano</div>
+    <div class="radio-container" id="Ator do Clube de Teatro do Ano">
+
+        <input type="radio" id="AtordoClubedeTeatrodoAno1" class="radio-input" name="Ator do Clube de Teatro do Ano" value="André Gonçalves">
+        <label class="radio-label" for="AtordoClubedeTeatrodoAno1">André Gonçalves</label>
+
+        <input type="radio" id="AtordoClubedeTeatrodoAno2" class="radio-input" name="Ator do Clube de Teatro do Ano" value="Jorge Figueira">
+        <label class="radio-label" for="AtordoClubedeTeatrodoAno2">Jorge Figueira</label>
+
+        <input type="radio" id="AtordoClubedeTeatrodoAno3" class="radio-input" name="Ator do Clube de Teatro do Ano" value="Rafael Diogo">
+        <label class="radio-label" for="AtordoClubedeTeatrodoAno3">Rafael Diogo</label>
+
+
+        <input type="radio" id="AtordoClubedeTeatrodoAno4" class="radio-input" name="Ator do Clube de Teatro do Ano" value="Xavier Silva">
+        <label class="radio-label" for="AtordoClubedeTeatrodoAno4">Xavier Silva</label>
+
+    </div>
+
+
+    <div class="question">Atriz do Clube de Teatro do Ano</div>
+    <div class="radio-container" id="Ator do Clube de Teatro do Ano">
+
+        <input type="radio" id="AtrizdoClubedeTeatrodoAno1" class="radio-input" name="Atriz do Clube de Teatro do Ano" value="André Gonçalves">
+        <label class="radio-label" for="AtrizdoClubedeTeatrodoAno1">Camile Hasse</label>
+
+        <input type="radio" id="AtrizdoClubedeTeatrodoAno2" class="radio-input" name="Atriz do Clube de Teatro do Ano" value="Haku Fortunato">
+        <label class="radio-label" for="AtrizdoClubedeTeatrodoAno2">Haku Fortunato</label>
+
+        <input type="radio" id="AtrizdoClubedeTeatrodoAno3" class="radio-input" name="Atriz do Clube de Teatro do Ano" value="Inês Oliveira">
+        <label class="radio-label" for="AtrizdoClubedeTeatrodoAno3">Inês Oliveira</label>
+
+        <input type="radio" id="AtrizdoClubedeTeatrodoAno4" class="radio-input" name="Atriz do Clube de Teatro do Ano" value="Madalena Nascimento">
+        <label class="radio-label" for="AtrizdoClubedeTeatrodoAno4">Madalena Nascimento</label>
+
+        <input type="radio" id="AtrizdoClubedeTeatrodoAno5" class="radio-input" name="Atriz do Clube de Teatro do Ano" value="Mariana Santos">
+        <label class="radio-label" for="AtrizdoClubedeTeatrodoAno5">Mariana Santos</label> 
+
+
+
+    </div>
+
+
+    <button class="button" id="voteBtn">Votar</button>
+</div>
+
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <p id="modalMessage">Seu voto foi registrado com sucesso!</p>
+    </div>
+</div>
+
+<div id="alreadyVotedMessage" style="display: none; color: red; margin-top: 20px;">
+    Você já votou! Obrigado pela sua participação.
+</div>
+
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
+    import { getDatabase, ref, set, get } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyBmaIc7aA25g5WVP_DTGHOCEtnW1ZXuyNc",
+  authDomain: "aawards.firebaseapp.com",
+  databaseURL: "https://aawards-default-rtdb.firebaseio.com",
+  projectId: "aawards",
+  storageBucket: "aawards.firebasestorage.app",
+  messagingSenderId: "839334918366",
+  appId: "1:839334918366:web:81f2bbfc78fd85f046ea4f",
+  measurementId: "G-Z9YLSTGHST"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    async function getUserIp() {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip.replace(/\./g, '_'); // Substitui pontos por sublinhados
+    }
+
+    getUserIp().then(userIp => {
+        const userVotesRef = ref(database, 'votes/' + userIp);
+
+        get(userVotesRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                document.getElementById('questionarioContainer').style.display = 'none';
+                document.getElementById('alreadyVotedMessage').style.display = 'block';
+            } else {
+                document.getElementById('questionarioContainer').style.display = 'block';
+            }
+        });
+
+        document.getElementById('voteBtn').addEventListener('click', async () => {
+            const selectedPersonalidadedoAno = document.querySelector('input[name="PersonalidadedoAno"]:checked');
+            const selectedPiada = document.querySelector('input[name="piada"]:checked');
+            const selectedEventodoAno = document.querySelector('input[name="EventodoAno"]:checked');
+            const selectedJogo = document.querySelector('input[name="Jogo"]:checked');
+            const selectedAcontecimento = document.querySelector('input[name="Acontecimento"]:checked');
+            const selectedMusica = document.querySelector('input[name="Musica"]:checked');
+            const selectedAtriz = document.querySelector('input[name="Atriz"]:checked');
+            const selectedAtor = document.querySelector('input[name="Ator"]:checked');
+            const selectedFilme = document.querySelector('input[name="Filme"]:checked');
+            const selectedACTA = document.querySelector('input[name="Ator do Clube de Teatro do Ano"]:checked');
+            const selectedARCTA = document.querySelector('input[name="Atriz do Clube de Teatro do Ano"]:checked');
+
+            if (!selectedPersonalidadedoAno || !selectedPiada || !selectedEventodoAno || !selectedJogo || !selectedJogo) {
+                alert('Por favor, selecione uma opção em todas as perguntas.');
+                return;
+            }
+
+            const votesData = {
+                PersonalidadedoAno: selectedPersonalidadedoAno.value,
+                piada: selectedPiada.value,
+                EventodoAno: selectedEventodoAno.value,
+                Jogo: selectedJogo.value,
+                Acontecimento: selectedAcontecimento.value,
+                Musica: selectedMusica.value,
+                Atriz: selectedAtriz.value,
+                Ator: selectedAtor.value,
+                Filme: selectedFilme.value,
+                Ator_de_Clube_de_Teatro_do_Ano: selectedACTA.value,
+                Atriz_de_Clube_de_Teatro_do_Ano: selectedARCTA.value,
+            };
+
+            await set(userVotesRef, votesData);
+
+            document.getElementById('modal').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('modal').style.display = 'none';
+            }, 3000);
+
+            document.getElementById('questionarioContainer').style.display = 'none';
+            document.getElementById('alreadyVotedMessage').style.display = 'block';
+        });
+    });
+</script>
+
+</body>
+</html>
