@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração Armindo Awards</title>
+    <style>
+       body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #0d0d0d, #3a3a3a);
+    color: #fff;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    color: #d4af37; /* Dourado */
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.results {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    justify-items: center;
+}
+
+.category {
+    width: 90%;
+    padding: 20px;
+    border: 1px solid #d4af37;
+    border-radius: 15px;
+    background: rgba(30, 30, 30, 0.9);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.category:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+}
+
+.category-title {
+    font-size: 1.8rem;
+    color: #d4af37;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.votes {
+    font-size: 1.2rem;
+    margin: 5px 0;
+}
+
+.winner {
+    font-weight: bold;
+    font-size: 1.4rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Estilo para categorias destacadas */
+.highlighted-category {
+    background: linear-gradient(135deg, #fda814, #f09800); /* Gradiente em tons de laranja */
+    box-shadow: 0 4px 20px rgb(255, 191, 54); /* Efeito de brilho */
+    animation: pulseEffect 2s infinite; /* Animação de pulsação */
+    color: #fff; /* Garante que todo o texto dentro fique branco */
+}
+
+.highlighted-category .category-title, 
+.highlighted-category .votes, 
+.highlighted-category .winner {
+    color: #fff !important; /* Força o texto a ficar branco */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Adiciona contraste ao texto */
+}
+
+@keyframes pulseEffect {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 4px 20px rgba(255, 191, 54, 0.8);
+    }
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 6px 25px rgba(255, 191, 54, 1);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 4px 20px rgba(255, 191, 54, 0.8);
+    }
+}
+
+.delete-btn {
+    background: linear-gradient(45deg, #ff4c4c, #ff1a1a);
+    color: #fff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background 0.3s, transform 0.3s;
+    margin-top: 30px;
+}
+
+.delete-btn:hover {
+    background: linear-gradient(45deg, #ff1a1a, #ff4c4c);
+    transform: translateY(-3px);
+}
+
+.no-votes {
+    font-size: 1.5rem;
+    color: #f39c12;
+    margin-top: 20px;
+}
+
+    </style>
+</head>
+<body>
+
+<h1>Resultados Armindo Awards</h1>
+<div class="results" id="resultsContainer"></div>
+
+<button class="delete-btn" id="deleteVotesBtn">Deletar Todos os Votos</button>
+
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
+    import { getDatabase, ref, onValue, remove } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js';
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBmaIc7aA25g5WVP_DTGHOCEtnW1ZXuyNc",
+        authDomain: "aawards.firebaseapp.com",
+        projectId: "aawards",
+        storageBucket: "aawards.appspot.com",
+        messagingSenderId: "792084045183",
+        appId: "1:792084045183:web:1446f933751da048b73770",
+        databaseURL: "https://aawards-default-rtdb.firebaseio.com/",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const resultsContainer = document.getElementById('resultsContainer');
+
+    const categories = [
+        "PersonalidadedoAno",
+        "piada",
+        "EventodoAno",
+        "Jogo",
+        "Acontecimento",
+        "Musica",
+        "Atriz",
+        "Ator",
+        "Filme",
+        "Ator_de_Clube_de_Teatro_do_Ano",
+        "Atriz_de_Clube_de_Teatro_do_Ano"
+    ];
+
+    const categoryNames = {
+        PersonalidadedoAno: "Personalidade do Ano",
+        piada: "Piada Interna do Ano",
+        EventodoAno: "Evento do Ano",
+        Jogo: "Jogo do Ano",
+        Acontecimento: "Acontecimento do Ano",
+        Musica: "Música do Ano",
+        Atriz: "Atriz do Ano",
+        Ator: "Ator do Ano",
+        Filme: "Filme do Ano",
+        Ator_de_Clube_de_Teatro_do_Ano: "Ator do Clube de Teatro do Ano",
+        Atriz_de_Clube_de_Teatro_do_Ano: "Atriz do Clube de Teatro do Ano"
+    };
+
+    function updateResults() {
+        const votesRef = ref(database, 'votes/');
+        onValue(votesRef, (snapshot) => {
+            resultsContainer.innerHTML = ''; // Limpa resultados anteriores
+            const data = snapshot.val();
+
+            if (data) {
+                const resultsCount = {};
+
+                // Inicializa contagem para cada categoria
+                categories.forEach(category => resultsCount[category] = {});
+
+                // Conta os votos
+                for (const userIp in data) {
+                    const vote = data[userIp];
+                    for (const category of categories) {
+                        if (vote[category] !== undefined) {
+                            const option = vote[category];
+                            if (!resultsCount[category][option]) {
+                                resultsCount[category][option] = 0;
+                            }
+                            resultsCount[category][option]++;
+                        }
+                    }
+                }
+
+                // Mostra os resultados de cada categoria
+                for (const category in resultsCount) {
+                    const section = document.createElement('div');
+                    section.className = 'category';
+                    
+                    // Aplica destaque em categorias específicas
+                    if (category === "Ator_de_Clube_de_Teatro_do_Ano" || category === "Atriz_de_Clube_de_Teatro_do_Ano") {
+                        section.classList.add('highlighted-category');
+                    }
+
+                    section.innerHTML = `<div class="category-title">Resultados - ${categoryNames[category]}</div>`;
+                    
+                    let maxVotes = 0;
+                    let currentWinner = '';
+
+                    for (const item in resultsCount[category]) {
+                        section.innerHTML += `<div class="votes">${item}: ${resultsCount[category][item]} votos</div>`;
+                        if (resultsCount[category][item] > maxVotes) {
+                            maxVotes = resultsCount[category][item];
+                            currentWinner = item;
+                        }
+                    }
+                    
+                    if (maxVotes > 0) {
+                        section.innerHTML += `<div class="winner">Vencedor Atual: ${currentWinner}</div>`;
+                    } else {
+                        section.innerHTML += `<div class="no-votes">Nenhum voto registrado nesta categoria.</div>`;
+                    }
+
+                    resultsContainer.appendChild(section);
+                }
+            } else {
+                resultsContainer.innerHTML = '<div class="no-votes">Nenhum voto registrado ainda.</div>';
+            }
+        });
+    }
+
+    document.getElementById('deleteVotesBtn').addEventListener('click', () => {
+        const votesRef = ref(database, 'votes/');
+        remove(votesRef).then(() => {
+            alert('Todos os votos foram deletados com sucesso!');
+        }).catch((error) => {
+            alert('Erro ao deletar os votos: ' + error);
+        });
+    });
+
+    updateResults(); // Chama a função para atualizar resultados na inicialização
+</script>
+</body>
+</html>
